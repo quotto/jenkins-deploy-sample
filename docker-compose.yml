@@ -1,0 +1,32 @@
+https-portal:
+  image: steveltn/https-portal:1.7.3
+  ports:
+    - '80:80'
+    - '443:443'
+  links:
+    - node
+  restart: always
+  environment:
+    STAGE: 'production'
+    DOMAINS: 'link.mythrowaway.net -> http://node:2000'
+  volumes:
+    - ./web/cert:/var/lib/https-portal
+  dns: 8.8.8.8
+node:
+  build: ./app
+  volumes: 
+      - ../server:/src
+  expose: 
+      - 2000
+  environment: 
+      - NODE_OPTION=--port 2000 
+  dns: 8.8.8.8
+jenkins:
+  build: ./jenkins
+  ports:
+      - 8080:8080
+  volumes:
+      - ~/.jenkins:/var/jenkins_home
+      - ../server:/src
+      - /var/run/docker.sock:/var/run/docker.sock
+  privileged: true
