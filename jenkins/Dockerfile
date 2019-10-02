@@ -19,4 +19,8 @@ RUN curl -fL -o docker.tgz "https://download.docker.com/linux/static/test/x86_64
 RUN curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/releases/download/1.19.1/docker-dompose-`uname -s`-`uname -m` && chmod +x /usr/local/bin/docker-compose
 RUN chmod +x /usr/local/bin/docker-compose
 
+# add docker group
+ARG DOCKER_GROUP_ID
+RUN groupadd -g ${DOCKER_GROUP_ID} docker && usermod -aG ${DOCKER_GROUP_ID} jenkins
+
 USER jenkins
